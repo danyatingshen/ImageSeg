@@ -13,6 +13,7 @@ using System.IO;
 
 namespace ImageEdgeDetection
 {
+    // These are the matrices that we use in our edge detection
     public static class Matrix
     {
         public static double[,] Laplacian3x3
@@ -43,16 +44,20 @@ namespace ImageEdgeDetection
 
     public static class ExtendBitmap
     {
+	// This is our convolution filter that we apply to our original picture (Bitmap source)
         private static Bitmap convFilter(Bitmap source, double[,] fMatrix) 
 	{
+	    // First, we lock all of the pixels
             BitmapData sourceData = source.LockBits
 	    	       		    (new Rectangle(0, 0, source.Width, source.Height),
 				    ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
+	    // We now make a pixel buffer and a result buffer
             byte[] pixelBuffer = new byte[sourceData.Stride*sourceData.Height];
             byte[] resultBuffer = new byte[sourceData.Stride*sourceData.Height];
 
             Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
+	    // Now, we can unlock the bits
             source.UnlockBits(sourceData);
 
             float rgb = 0;
@@ -124,9 +129,11 @@ namespace ImageEdgeDetection
                     resultBuffer[bOffset+3] = 255;
                 }
             }
-
+	    
+	    // Now, we begin making the Bitmap to be returned
             Bitmap result = new Bitmap(source.Width, source.Height);
 
+	    // We lock its bits and then copy the data over
             BitmapData resultData = result.LockBits
 	    	       		    (new Rectangle(0, 0, result.Width, result.Height),
 				    ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
@@ -139,6 +146,7 @@ namespace ImageEdgeDetection
 
         public static Bitmap Laplacian3x3Filter(this Bitmap source) 
         {
+	    // Calls the convolution filter with the 3x3 matrix
             Bitmap result = ExtendBitmap.convFilter(source, Matrix.Laplacian3x3);
 
             return result;
@@ -146,6 +154,7 @@ namespace ImageEdgeDetection
 
         public static Bitmap Laplacian5x5Filter(this Bitmap source)
         {
+	    // Calls the convolution filter with the 5x5 matrix
             Bitmap result = ExtendBitmap.convFilter(source, Matrix.Laplacian5x5);
 
             return result;
@@ -168,11 +177,16 @@ namespace ImageEdgeDetection
         {
 	    Bitmap original = null;
 
+	    // We first figure out what image to examine
             Console.Write("Input file name: ");
             string inputFile = Console.ReadLine();
-	    original = new Bitmap(inputFile);
-	    Bitmap result = ApplyFilter(original);
 
+	    // We make a Bitmap based on this
+	    original = new Bitmap(inputFile);
+	    // And then we apply the convolution filter
+	    Bitmap result = ApplyFilter(original);
+	    
+	    // Now, we figure out where to save the resulting image
             Console.Write("Output file name: ");
             string outputFile = Console.ReadLine();
 	    result.Save(outputFile);
