@@ -4,7 +4,7 @@ Professor Roberto Hoyle
 CSCI 241 - Systems Programming
 15 May 2019
 
-“Visual Searching” Using Google’s Vision API and Image Segmentation
+					“Visual Searching” Using Google’s Vision API and Image Segmentation
 
 Introduction
 Our project can best be described as, for lack of a better term, a “visual search.” We created an interface that allows the user to enter a search query on an image and either receive a “not found” message or display the desired element within the original image. 
