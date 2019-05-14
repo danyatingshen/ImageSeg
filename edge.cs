@@ -11,6 +11,9 @@ using System.Data;
 using System.Windows.Forms;
 using System.IO;
 
+// Alex Jensen, Sam Fertig, Amanda Shen, and Eunjun Choo
+// We used sample source code from softwarebydefault.com/2013/05/11/image-edge-detection/ as inspiration.
+
 namespace ImageEdgeDetection
 {
     // These are the matrices that we use in our edge detection
@@ -57,6 +60,7 @@ namespace ImageEdgeDetection
             byte[] resultBuffer = new byte[sourceData.Stride*sourceData.Height];
 
             Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
+
 	    // Now, we can unlock the bits
             source.UnlockBits(sourceData);
 
@@ -161,20 +165,18 @@ namespace ImageEdgeDetection
         }
     }  
 
-    class Program
-    {
-    static Bitmap ApplyFilter(Bitmap source) {
+    class Program {
+    	  static Bitmap ApplyFilter(Bitmap source) {
     	   
-           Bitmap result = null;
+		Bitmap result = null;
 
-//         result = source.Laplacian3x3Filter();
-           result = source.Laplacian5x5Filter();
+//      	result = source.Laplacian3x3Filter();
+       	   	result = source.Laplacian5x5Filter();
 
-	   return result;
-        }
+	   	return result;
+           }
 
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
 	    Bitmap original = null;
 
 	    // We first figure out what image to examine
@@ -190,7 +192,6 @@ namespace ImageEdgeDetection
             Console.Write("Output file name: ");
             string outputFile = Console.ReadLine();
 	    result.Save(outputFile);
-
         }
     }
 }
