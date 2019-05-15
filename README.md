@@ -50,7 +50,9 @@ Future Work
 
 
 
+TO USE OUR PROGRAM
 
+We had to place our "interface" application file with our Google application files, since our "interface" application will need those Google extension files. Moreover, for the "key_thing.json" file that authenticates to our API, we will email Hoyle personally. Make sure to place the .json file next to the interface application file.
 
 
 
