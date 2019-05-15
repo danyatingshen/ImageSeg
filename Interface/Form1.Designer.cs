@@ -41,6 +41,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,7 +67,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(31, 184);
+            this.label1.Location = new System.Drawing.Point(31, 190);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 20);
             this.label1.TabIndex = 1;
@@ -121,7 +123,7 @@
             "Edge Detection"});
             this.comboBox1.Location = new System.Drawing.Point(183, 115);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(180, 28);
+            this.comboBox1.Size = new System.Drawing.Size(171, 28);
             this.comboBox1.TabIndex = 13;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.ComboBox1_SelectedIndexChanged);
             // 
@@ -164,9 +166,33 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.Button7_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(31, 190);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(97, 20);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Filter Choice";
+            this.label2.Click += new System.EventHandler(this.Label2_Click_1);
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "Laplacian 3x3",
+            "Laplacian 5x5"});
+            this.comboBox2.Location = new System.Drawing.Point(183, 184);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(171, 28);
+            this.comboBox2.TabIndex = 19;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.ComboBox2_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(1404, 598);
+            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.label5);
@@ -205,5 +231,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBox2;
     }
 }

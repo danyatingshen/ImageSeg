@@ -13,43 +13,65 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
+
 namespace VisionApi
 {
     class Vision
     {
-        public static int containsElement(Image image_name, String query)
+        public static List<String> containsElement(Image image_name)
         {
+            List<String> myList = new List<String>();
+
             //setting up the Google Credentials
-            GoogleCredential cred = GoogleCredential.FromFile("key_thing.json");
-            Channel channel = new Channel(
-            ImageAnnotatorClient.DefaultEndpoint.Host, ImageAnnotatorClient.DefaultEndpoint.Port, cred.ToChannelCredentials());
-            ImageAnnotatorClient client = ImageAnnotatorClient.Create(channel);
-            
-                // Shutdown the channel when it is no longer required.
-            //channel.ShutdownAsync().Wait();
-
-            // Load an image from a local file
-            var image = image_name;
-
-            // create client, get response
-            //var client = ImageAnnotatorClient.Create();
-            var response = client.DetectLabels(image);
-
-            // loop through each returned label, check for match with query
-            foreach (var annotation in response)
+            try
             {
-                String current = annotation.Description;
-                if (current != null)
+                string API_key = Directory.GetCurrentDirectory() + "\\key_thing.json"; ;
+                GoogleCredential cred = GoogleCredential.FromFile(API_key);
+                Channel channel = new Channel(
+                ImageAnnotatorClient.DefaultEndpoint.Host, ImageAnnotatorClient.DefaultEndpoint.Port, cred.ToChannelCredentials());
+                ImageAnnotatorClient client = ImageAnnotatorClient.Create(channel);
+
+                // Shutdown the channel when it is no longer required.
+                //channel.ShutdownAsync().Wait();
+                // Load an image from a local file
+                var image = image_name;
+
+                // create client, get response
+                //var client = ImageAnnotatorClient.Create();
+
+
+                var response = client.DetectLabels(image);
+
+
+
+                foreach (var annotation in response)
                 {
-                    if (current.ToLower().Equals(query.ToLower()))
+                    String current = annotation.Description;
+                    if (current != null)
                     {
-                        return 1; // true
-                    }/
+                        myList.Add(current.ToLower());
+                    }
                 }
-                //Console.WriteLine(annotation.Description);
+                return myList;
+            }
+
+            //Console.WriteLine(annotation.Description);
+
+
+
+            catch (Grpc.Core.RpcException ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Authentication error with the API. Check your \"key_thing.json\" Close this program and try again");
+                return myList;
+            }
+            catch (FileNotFoundException ex)
+
+            {
+                System.Windows.Forms.MessageBox.Show("\"key_thing.json\" Not found. Close this program and try again");
+                return myList;
 
             }
-            return 0; // false
-        }
+        
+            }
     }
 }

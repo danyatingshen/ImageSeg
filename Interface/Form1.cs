@@ -15,13 +15,15 @@ using Imaging;
 using ImageEdgeDetection;
 using VisionApi;
 
+
+
 namespace Interface
 {
     public partial class Form1 : Form
     {
 
         //the first image that user loads
-        System.Drawing.Image pic;
+        Bitmap pic;
 
         //the wanted output
         Bitmap resultBitmap;
@@ -45,10 +47,19 @@ namespace Interface
         string[] files;
 
         string[] ImageCollections;
+        //our list from API on accurate terms
+        List<String>[] API_results;
 
-
+        //tracks if we already have the API list or not
+        int API_sent = 0;
         //our user query
-        String theText1;
+        String user_query;
+
+        //our tracker to have us not repeat the process of the K clustering
+        int searched = 0;
+
+        string EdgeFilter;
+
         public Form1()
         {
             InitializeComponent();
@@ -109,7 +120,9 @@ namespace Interface
 
         private void Button4_Click(object sender, EventArgs e)
         {
-
+            //if the help button is pressed, create a new help form
+            HelpButton temp = new HelpButton(); 
+            temp.ShowDialog(); //and show it
         }
 
         //the user outputs of terms
@@ -117,7 +130,7 @@ namespace Interface
         {
             
             TextBox1 = (TextBox)sender;
-            theText1 = TextBox1.Text;
+            user_query = TextBox1.Text.ToLower();
         }
 
         private void Form1_Load_1(object sender, EventArgs e)
@@ -144,25 +157,46 @@ namespace Interface
 
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //we alternate and shows user's options, based on their Segmentation choices
             if (comboBox1.Text == "Edge Detection")
             {
                 textBox1.Visible = false;
                 textBox1.Enabled = false;
+                label1.Visible = false;
+
+                label2.Visible = true;
+                comboBox2.Visible = true;
+                comboBox2.Enabled = true;
             }
 
-            if (comboBox1.Text == "K Clustering")
+            else if (comboBox1.Text == "K Clustering")
             {
+                label1.Visible = true;
                 textBox1.Visible = true;
                 textBox1.Enabled = true;
+                label2.Visible = false;
+                comboBox2.Visible = false;
+                comboBox2.Enabled = false;
+            }
+            else 
+            {
+                textBox1.Visible = false;
+                textBox1.Enabled = false;
+                label1.Visible = false;
+
+                label2.Visible = false;
+                comboBox2.Visible = false;
+                comboBox2.Enabled = false;
             }
            
         }
         //Our "search photo" button
         private void Button5_Click(object sender, EventArgs e)
         {
+            button3.Enabled = false;
             //if the user presses "click", we gotta start analyzing what is given
-
             analyze();
+           
         }
         ////~~~~~~~~~~~~~~~~~~~~~~~~~ Some crucial methods
         ///
@@ -208,59 +242,101 @@ namespace Interface
                {
                     //before doing the segmentation, check if "temp.jpg" exists and "Segmented Image" exists
 
-                    
-                    
-                    //using the method from KMC.cs
-                    Bitmap temp = (Bitmap)pic;
-                    //set the name of the files created from the segmentation
-                    temp.Save("t3mp.jpg",System.Drawing.Imaging.ImageFormat.Jpeg);
-                    //string directoryName = Path.GetDirectoryName("temp.jpg");
-                    //string sourcePath = Directory.GetCurrentDirectory();
-                    
-                    
 
-                    //Trying Amanda's method
-                    ImageSegmentation.Compute("t3mp.jpg");
-       
-                    //Now the color segmented images are in a folder called "Segmented Image"
+
+                    //using the method from KMC.cs
+                    if (searched == 0)
+                    {
+                        Bitmap temp = (Bitmap)pic;
+                        //set the name of the files created from the segmentation
+                        temp.Save("t3mp.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                        //temp.Dispose();
+                        searched = 1;
+                    }
+                 //string directoryName = Path.GetDirectoryName("temp.jpg");
+                 //string sourcePath = Directory.GetCurrentDirectory();
+                    
 
                     string path = Directory.GetCurrentDirectory();
+                    //Now the color segmented images are in a folder called "Segmented Image"
                     string directory = path + "\\S3gmented Image";
+                    //if there has not been K-clustering, skip the process and go to the API
+                    if (!(System.IO.Directory.Exists(directory))){
+
+                        //Trying Amanda's method
+                        ImageSegmentation.Compute("t3mp.jpg");
+                    }
+
 
                     files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
-                    
                     int numFiles = files.GetLength(0);
-                    ImageCollections = new string[numFiles];
 
-                    int tempCounter = 0;
-                    //array that collects 0 or 1, depending on user's input
-                    int[] API_results = new int[numFiles];
-                    //Now we go inside the Segmented Image folder store each image 
-                    foreach (string file in files)
+                    //if the user enters another term after the images were already sent to API, we don't need to send to API again
+                    if (API_sent == 0)
                     {
-                        ImageCollections[tempCounter] = file;
-                        Google.Cloud.Vision.V1.Image integer = Google.Cloud.Vision.V1.Image.FromFile(ImageCollections[tempCounter]);
-                        //returns 0 if the word not found. returns 1 if found
-                        int testNum = Vision.containsElement(integer, theText1);
-                        API_results[tempCounter] = testNum;
 
-                        tempCounter++;
-                    }
-                    //returns the first picture that is valued 1 and skips the rest...
-                    for (int i =1; i <numFiles; i++)
-                    {
-                        if (API_results[i] == 1)
+                        
+                        ImageCollections = new string[numFiles];
+
+                        int tempCounter = 0;
+                        //array that collects the accurate terms list
+                        API_results = new List<string>[numFiles];
+                        //Now we go inside the Segmented Image folder and loop
+                        foreach (string file in files)
                         {
-                            resultBitmap = new Bitmap(ImageCollections[i]);
-                            break;
+                            ImageCollections[tempCounter] = file;
+                            Google.Cloud.Vision.V1.Image integer = Google.Cloud.Vision.V1.Image.FromFile(ImageCollections[tempCounter]);
+                            //Keeps track of the terms used
+                            API_results[tempCounter] = Vision.containsElement(integer);
+                            tempCounter++;
                         }
+                        //so we don't have to loop over again. We already have the information
+                        API_sent = 1;
 
                     }
-                  
+
+                    //our algorithm is first loop over each picture and if the user_query match, save the matching image and the rank in the array
+                    // then continue over and if the user_query match on the next file and if the rank in the array is lower (more front), switch the saved image
+                    int rank = 999;
+
+                    for (int i = 1; i < numFiles; i++)
+                    {
+                        int count = API_results[i].Count;
+                        for (int k = 0; k < count; k++)
+                        {
+                            if (String.Equals(user_query, API_results[i][k]))
+                            {
+                                //found a better and more accurate image. higher ranked
+                                if (rank > k)
+                                { 
+                                    //want to free up our files, so we can delete later
+                                    if (resultBitmap != null)
+                                    {
+                                        resultBitmap.Dispose();
+                                    }
+                                    resultBitmap = new Bitmap(ImageCollections[i]);
+                                    rank = k;
+                                }
+                            }
+                        }
+                    }
+                    // no API term found
+                    if (rank == 999)
+                    {
+                        System.Windows.Forms.MessageBox.Show("No search term of \""+ user_query+"\" found");
+
+                    }
+
+
+                    /*                    
+                     List<String> output = API_results[1];
+                     String printing = output[1];
+
+                     System.Windows.Forms.MessageBox.Show(printing.ToString());
+                     */
                     //string name = ImageCollections[1];
                     //testNum = Vision.containsElement(ImageCollections[1], theText1);
-                    
-                    //temp.Dispose();
+
 
                     //for the test purpose, get the second image that has been cropped
 
@@ -270,24 +346,25 @@ namespace Interface
 
                     //System.Windows.Forms.MessageBox.Show(testNum.ToString());
                     //pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-                    pictureBox1.Image = resultBitmap;
-                    /*
-                    foreach (string file in tracker)
+                    if (resultBitmap != null)
                     {
-                        Console.WriteLine(file);
-
+                        pictureBox1.Image = resultBitmap;
                     }
-                    */
-
+                   
+                  
 
                 }
                 //System.Windows.Forms.MessageBox.Show(segmentation);
 
                 if (segmentation == "Edge Detection")
                 {
+                    if (resultBitmap != null)
+                    {
+                        resultBitmap.Dispose();
+                    }
                     //System.Windows.Forms.MessageBox.Show("Here");
 
-                    resultBitmap = Filter.ApplyFilter((Bitmap)pic);
+                    resultBitmap = Filter.ApplyFilter((Bitmap)pic, EdgeFilter);
 
                     //Image finaloutput = (Image)resultBitmap;
                     //pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -319,6 +396,8 @@ namespace Interface
         {
             if (pictureBox1.Image == resultBitmap)
             {
+                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
                 pictureBox1.Image = pic;
             }
             else
@@ -328,6 +407,17 @@ namespace Interface
                     pictureBox1.Image = resultBitmap;
                 }
             }
+            
+            /*
+            if (pic == null)
+            {
+                System.Windows.Forms.MessageBox.Show("pic is null");
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("pic isn't null");
+            }
+            */
         }
 
         private void Button6_Click(object sender, EventArgs e)
@@ -377,13 +467,24 @@ namespace Interface
                 ImageCollections[index] = null;
             }
               */
-            resultBitmap.Dispose();
-            pic.Dispose();
+            if (resultBitmap != null)
+            {
+                resultBitmap.Dispose();
+            }
+            if (pic != null)
+            {
+                pic.Dispose();
+            }
+            if (pictureBox1 != null)
+            {
+                pictureBox1.Dispose();
+            }
+            /*
             files = null;
             ImageCollections = null;
             pictureBox1 = null;
             //pictureBox1.Image = null;
-           
+           */
             if (System.IO.Directory.Exists("S3gmented Image")){
                
                 DeleteDirectory("S3gmented Image");
@@ -395,6 +496,16 @@ namespace Interface
             }
             */
             Application.Exit();
+        }
+
+        private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EdgeFilter = comboBox2.Text;
+        }
+
+        private void Label2_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

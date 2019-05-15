@@ -381,7 +381,8 @@ namespace Imaging
                             Point<int> first=new Point<int>(x, y, myFrame.GetPixel(x, y));
                             Point<int> second=new Point<int>(Centroids[j].x, Centroids[j].y, Centroids[j].color);
                             double color_depth = Euclidian_distance(first,second);
-                            if (color_depth <= 50){
+                            //if (color_depth <= 50){
+                            if(color_depth <= 75) { 
                                 modefilyable.SetPixel(x, y, Centroids[j].color);
                             }else{
                                 modefilyable.SetPixel(x, y, Color.FromArgb(255, 255, 255));
