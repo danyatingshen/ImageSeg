@@ -1,4 +1,4 @@
-# Image Segmentation 
+# iSpy: Implementing a Visual Search
 Sam Fertig, Alex Jensen, Amanda Shen, & Eunjun Choo
 
 		 		“Visual Searching” Using Google’s Vision API and Image Segmentation
