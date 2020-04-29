@@ -1,5 +1,6 @@
 # iSpy: Implementing a Visual Search
 Sam Fertig, Alex Jensen, Amanda Shen, & Eunjun Choo
+May 2019
 
 		 		“Visual Searching” Using Google’s Vision API and Image Segmentation
 
@@ -42,8 +43,6 @@ The end product diverts from the expectations of our proposal. In certain areas 
 
 We are excited with what we have accomplished, as we’ve achieved things we did not expect to: the interface and the efficiency of the algorithms. The fact that we are able to connect to the Google Vision API in real time, as well as segment images extremely quickly and in a manner that is accessible to the user, is exciting in its future prospects. As we move forward with this, the priority will be to use edge detection to segment images in a way that allows API use. We could then achieve the results we had initially sought after, and include the extra functionality we’ve inadvertently created.
 
-Though we all discussed with each other periodically, we each developed certain areas of the program. Amanda and Alex implemented k-means clustering segmentation and edge detection respectively, while Eunjun created the interface and wrote the main method capable of combining the aforementioned segmentation methods and the API capability that Sam developed. 
-
 #### Discussion
 What we learned can be divided into two types of knowledge: technical and non-technical knowledge. 
 
@@ -62,23 +61,22 @@ Except for the API (because it’s not our technology), virtually every aspect o
 We can also rethink the function/purpose of our program. What if we searched for audio snippets within a larger audio file? What if we implemented recursive segmentation: would that mean a quicker, cleaner search? There are a number of ways we can improve and expand upon our program as it stands and a number of ways we can rethink its overall function while keeping it conceptually consistent.
 
 
-TO USE OUR PROGRAM
+						TO USE OUR PROGRAM
 
-We had to place our "interface" application file with our Google application files, since our "interface" application will need those Google extension files. Moreover, for the "key_thing.json" file that authenticates to our API, we will email Hoyle personally. Make sure to place the .json file next to the interface application file.
+All files pertaining to the interface application need to be in the same folder as all Google application files. To authenticate to our API, you must use our specific .json key. Make sure to place the .json file with the interface application files.
 
-
-
-We affirm that we have adhered to the Honor Code on this assignment.
-Sam Fertig
-Alex Jensen
-Eunjun Choo
-Amanda Shen
+###### We affirm that we have adhered to the Honor Code on this assignment.
+	- Sam Fertig
+	- Alex Jensen
+	- Eunjun Choo
+	- Amanda Shen
 
 
 
-
-Works Cited
+							Works Cited
 “Cloud Vision.” Google Cloud, Google, cloud.google.com/vision/.
+
 Esterhuizen, Dewald. “C# How to: Image Edge Detection.” Software by Default, 30 June 2013, softwarebydefault.com/2013/05/11/image-edge-detection/.
+
 “C# Edge Detection.” Instructables, Instructables, 8 Oct. 2017, www.instructables.com/id/c-Edge-Detection/.
 Ratz, Arthur V. “Implementing K-Means Image Segmentation Algorithm.” CodeProject, CodeProject, 29 Aug. 2017, www.codeproject.com/Articles/1203227/Implementing-K-Means-Image-Segmentation-Algorithm.
