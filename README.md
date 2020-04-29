@@ -1,5 +1,5 @@
 # iSpy: Implementing a Visual Search
-Sam Fertig, Alex Jensen, Amanda Shen, & Eunjun Choo
+Amanda Shen, Sam Fertig, Alex Jensen, & Eunjun Choo
 
 May 2019
 
