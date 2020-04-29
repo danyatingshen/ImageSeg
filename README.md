@@ -32,6 +32,7 @@ To use the API in general, we consulted the Google Vision website and tutorials 
 As stated previously, our project can best be described as, for lack of a better term, a “visual search.” Our interface allows a user to choose between two types of image segmentation: k-means clustering or Laplacian edge detection. If the user decides on k-means clustering, they can then enter a search query and see if that query appears in the image. Otherwise, using edge detection, they can choose between using a 3x3 or a 5x5 Laplacian of Gaussian matrix and the interface then displays the resulting segmented image. In either case, the user has the option of saving the resulting image or returning to a previously displayed image. 
 
 As it stands, the program works as follows:
+
 	1. The user runs the program and an interface appears. They are prompted to enter a search query and to upload an image on which to search. They may also select a segmentation method, but for the API to work, only k-means clustering may be selected. The edge detection option will merely return the original image but segmented—the query is irrelevant. For the purposes of this walkthrough, assume k-means. 
 	2. The uploaded image is passed into the clustering method. The image is segmented and each segment saved as its own image in the folder the program was run in.
 	3. Each image (each segment of the original) is passed into the API function, sending a label detection request to the GoogleVision server using a private .json key for authentication. If successful, the function returns a sorted list (in descending order) of labels for the image. That is to say, list[0] is the Vision API’s best guess at what the picture contains.
@@ -66,10 +67,10 @@ We can also rethink the function/purpose of our program. What if we searched for
 All files pertaining to the interface application need to be in the same folder as all Google application files. To authenticate to our API, you must use our specific .json key. Make sure to place the .json file with the interface application files.
 
 _We affirm that we have adhered to the Honor Code on this assignment._
-- Sam Fertig
-- Alex Jensen
-- Eunjun Choo
-- Amanda Shen
+* Sam Fertig
+* Alex Jensen
+* Eunjun Choo
+* Amanda Shen
 
 
 
