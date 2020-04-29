@@ -1,5 +1,6 @@
 # iSpy: Implementing a Visual Search
 Sam Fertig, Alex Jensen, Amanda Shen, & Eunjun Choo
+
 May 2019
 
 		 		“Visual Searching” Using Google’s Vision API and Image Segmentation
@@ -33,12 +34,12 @@ As stated previously, our project can best be described as, for lack of a better
 
 As it stands, the program works as follows:
 
-	1. The user runs the program and an interface appears. They are prompted to enter a search query and to upload an image on which to search. They may also select a segmentation method, but for the API to work, only k-means clustering may be selected. The edge detection option will merely return the original image but segmented—the query is irrelevant. For the purposes of this walkthrough, assume k-means. 
-	2. The uploaded image is passed into the clustering method. The image is segmented and each segment saved as its own image in the folder the program was run in.
-	3. Each image (each segment of the original) is passed into the API function, sending a label detection request to the GoogleVision server using a private .json key for authentication. If successful, the function returns a sorted list (in descending order) of labels for the image. That is to say, list[0] is the Vision API’s best guess at what the picture contains.
-	4. We iterate through each list in order of API confidence (all 0 indices first) to correct for duplicate segments within an uploaded image and the API’s occasional ambiguity.
-	5. If a list element matches the user query, the segment is displayed.
-	6. If no list element matches the user query, the interface displays “not found.”
+   1. The user runs the program and an interface appears. They are prompted to enter a search query and to upload an image on which to search. They may also select a segmentation method, but for the API to work, only k-means clustering may be selected. The edge detection option will merely return the original image but segmented—the query is irrelevant. For the purposes of this walkthrough, assume k-means. 
+   2. The uploaded image is passed into the clustering method. The image is segmented and each segment saved as its own image in the folder the program was run in.
+   3. Each image (each segment of the original) is passed into the API function, sending a label detection request to the GoogleVision server using a private .json key for authentication. If successful, the function returns a sorted list (in descending order) of labels for the image. That is to say, list[0] is the Vision API’s best guess at what the picture contains.
+   4. We iterate through each list in order of API confidence (all 0 indices first) to correct for duplicate segments within an uploaded image and the API’s occasional ambiguity.
+   5. If a list element matches the user query, the segment is displayed.
+   6. If no list element matches the user query, the interface displays “not found.”
 	
 The end product diverts from the expectations of our proposal. In certain areas it exceeds them, in others it falls short. We exceeded our expectations in terms of the user interface and the quality and speed of both segmentation techniques. Unfortunately, our initial search model failed to take into account how elements are constructed in an image. The k-means clustering algorithm splits an image according to color, and a user-uploaded picture of a rainbow achieves excellent search results. A picture of a farm, however, will not properly segment a chicken, since a chicken might be comprised of different colors. In sum, our program works very well when searching for colors, but fails to find non-monochromatic elements in images. 
 
